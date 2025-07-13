@@ -1,22 +1,45 @@
 /*!
  * Copyright © 2025 Kirk Jackson
- * Licensed under the GNU Affero General Public License
+ * Licensed under the GNU Affero General Public License version 3
  */
 
 import { useState } from 'react'
 import './App.css'
 import ChatBubble from './ChatBubble'
+import type { Message } from './types.ts'
+
+type AppState = 'firstPrompt' | 'secondPrompt'
 
 function App() {
+  const states: AppState[] = ['firstPrompt', 'secondPrompt']
+
+  const [stateIndex, setStateIndex] = useState(0);
+  const [chatHistory, setChatHistory] = useState<Message[]>([{
+    author: 'chatbot',
+    text: 'Ready to redline! Please enter the first version of the text.',
+  }])
   const [textInput, setTextInput] = useState('')
-  const [chatHistory, setChatHistory] = useState(['aaa', 'bbb', 'ccc'])
 
   function handleSubmit() {
     // Don't accept an empty prompt.
-    if (textInput.trim() === '') return;
+    if (textInput.trim() === '') return
 
-    setChatHistory([...chatHistory, textInput])
-    setTextInput('')
+    const newMessages: Message[] = [{author: 'user', text: textInput}]
+
+    switch (states[stateIndex]) {
+      case 'firstPrompt':
+        newMessages.push({author: 'chatbot', text: 'Now please enter the second version of the text.'});
+        break;
+
+      case 'secondPrompt':
+        newMessages.push({author: 'chatbot', text: 'The two versions of the text differ in the following ways...'});
+        newMessages.push({author: 'chatbot', text: 'Ready to go again? Please enter the first version of the text.'});
+        break;
+    }
+
+    setChatHistory([...chatHistory, ...newMessages])
+    setTextInput('') // Blank the text area.
+    setStateIndex((stateIndex + 1) % states.length);
   }
 
   return (

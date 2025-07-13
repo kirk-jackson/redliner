@@ -1,6 +1,6 @@
 /*!
  * Copyright © 2025 Kirk Jackson
- * Licensed under the GNU Affero General Public License
+ * Licensed under the GNU Affero General Public License version 3
  */
 
 import { StrictMode } from 'react'

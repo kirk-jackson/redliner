@@ -1,6 +1,6 @@
 /*!
  * Copyright © 2025 Kirk Jackson
- * Licensed under the GNU Affero General Public License
+ * Licensed under the GNU Affero General Public License version 3
  */
 
 #root {
@@ -46,11 +46,21 @@ h1 {
 }
 
 .chat-bubble {
+  width: fit-content;
   margin: 0;
   border: 1px solid #e0e0e0;
   border-radius: 15px;
-  background-color: #f0f0f0;
   padding: 15px;
+}
+
+.chat-bubble.author-chatbot {
+  align-self: flex-start;
+  background-color: #ffe0e0;
+}
+
+.chat-bubble.author-user {
+  align-self: flex-end;
+  background-color: #f0f0f0;
 }
 
 textarea {
@@ -65,7 +75,7 @@ textarea {
 button {
   width: 60px;
   height: 60px;
-  padding: 10px;
+  padding: 12px;
   border: 0 none;
   border-radius: 10px;
   background-color: #fd515b;

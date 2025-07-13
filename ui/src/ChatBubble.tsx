@@ -1,12 +1,15 @@
 /*!
  * Copyright © 2025 Kirk Jackson
- * Licensed under the GNU Affero General Public License
+ * Licensed under the GNU Affero General Public License version 3
  */
 
-function ChatBubble({ message }: {message: string}) {
+import type { Message } from './types.ts'
+import clsx from 'clsx'
+
+function ChatBubble({ message }: { message: Message }) {
   return (
-    <p className="chat-bubble">
-      {message}
+    <p className={clsx('chat-bubble', `author-${message.author}`)}>
+      {message.text}
     </p>
   )
 }
