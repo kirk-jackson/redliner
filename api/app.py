@@ -1,9 +1,11 @@
-from flask import Flask, jsonify
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
 
-@app.route('/redline')
+@app.route('/redline', methods=['GET'])
 def redline():
-    return jsonify(message="The differences in the text are:")
+    textv1 = request.args.get('textv1')
+    textv2 = request.args.get('textv2')
+    return jsonify(message=f"The first version of the text is \"{textv1}\" and the second is \"{textv2}\".")

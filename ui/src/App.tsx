@@ -8,19 +8,14 @@ import './App.css'
 import ChatBubble from './ChatBubble'
 import type { Message } from './types.ts'
 
-type AppState = 'firstPrompt' | 'secondPrompt'
-
 function App() {
-  // The chat advances through a sequence of states and then resets.
-  const states: AppState[] = ['firstPrompt', 'secondPrompt']
-
   // App state
-  const [stateIndex, setStateIndex] = useState(0)
   const [chatHistory, setChatHistory] = useState<Message[]>([{
     author: 'chatbot',
     text: 'Ready to redline! Please enter the first version of the text.',
   }])
   const [textInput, setTextInput] = useState('')
+  const [firstVersionOfText, setFirstVersionOfText] = useState<string|null>(null)
 
   const chatHistoryRef = useRef<HTMLDivElement>(null)
 
@@ -32,26 +27,35 @@ function App() {
     }
   }, [chatHistory])
 
-  function handleSubmit() {
+  const handleSubmit = async () => {
     // Don't accept an empty message from the user.
     if (textInput.trim() === '') return
 
-    const newMessages: Message[] = [{author: 'user', text: textInput}]
+    // Post the user's message to the chat history.
+    setChatHistory(pendingChatHistory => [...pendingChatHistory, {author: 'user', text: textInput}])
+    setTextInput('')
 
-    switch (states[stateIndex]) {
-      case 'firstPrompt':
-        newMessages.push({author: 'chatbot', text: 'Now please enter the second version of the text.'})
-        break
-
-      case 'secondPrompt':
-        newMessages.push({author: 'chatbot', text: 'The two versions of the text differ in the following ways...'})
-        newMessages.push({author: 'chatbot', text: 'Ready to go again? Please enter the first version of the text.'})
-        break
+    // Process the user's input and let the chatbot respond.
+    if (firstVersionOfText === null) {
+      // The chatbot now has the first version of the text, but it still needs the second.
+      setFirstVersionOfText(textInput)
+      setChatHistory(pendingChatHistory => [
+        ...pendingChatHistory,
+        {author: 'chatbot', text: 'Now please enter the second version of the text.'}
+      ])
+    } else {
+      // The chatbot now has both versions of the text, so it can redline them.
+      const params = new URLSearchParams({ textv1: firstVersionOfText, textv2: textInput })
+      const response = await fetch(`http://localhost:5000/redline?${params}`)
+      const data = await response.json()
+      setChatHistory(pendingChatHistory => [
+        ...pendingChatHistory,
+        {author: 'chatbot', text: data.message},
+        {author: 'chatbot', text: 'Ready to go again? Please enter the first version of the text.'},
+      ])
+  
+      setFirstVersionOfText(null) // Reset the state, ready to start again.
     }
-
-    setChatHistory([...chatHistory, ...newMessages]) // Add new messages to the chat history.
-    setTextInput('') // Blank the text area.
-    setStateIndex((stateIndex + 1) % states.length) // Keep track of where we're up to in the chat.
   }
 
   return (
