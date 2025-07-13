@@ -17,5 +17,5 @@ docker-compose up --build
 
 Hot reload enabled for both Python back end and React front end.
 
-- Front end: http://localhost:3000
+- UI: http://localhost:3000
 - API: http://localhost:5000
