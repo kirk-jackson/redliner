@@ -6,7 +6,7 @@
 import { useState, useEffect, useRef } from 'react'
 import './App.css'
 import ChatBubble from './ChatBubble'
-import type { Message } from './types.ts'
+import type { Author, Message } from './types.ts'
 
 function App() {
   // App state
@@ -27,34 +27,49 @@ function App() {
     }
   }, [chatHistory])
 
+  const addMessageToChatHistory = (author: Author, text: string) => {
+    setChatHistory(pendingChatHistory => [...pendingChatHistory, {author, text}])
+  }
+
+  const appendToLastMessageInChatHistory = (textChunk: string) => {
+    setChatHistory(pendingChatHistory => {
+      if (pendingChatHistory.length === 0) return pendingChatHistory
+
+      const lastMessage = pendingChatHistory.at(-1) as Message
+      return [
+        ...pendingChatHistory.slice(0, -1),
+        {
+          ...lastMessage,
+          text: lastMessage.text + textChunk,
+        },
+      ]
+    })
+  }
+
   const handleSubmit = async () => {
     // Don't accept an empty message from the user.
     if (textInput.trim() === '') return
 
     // Post the user's message to the chat history.
-    setChatHistory(pendingChatHistory => [...pendingChatHistory, {author: 'user', text: textInput}])
+    addMessageToChatHistory('user', textInput)
     setTextInput('')
 
     // Process the user's input and let the chatbot respond.
     if (firstVersionOfText === null) {
       // The chatbot now has the first version of the text, but it still needs the second.
       setFirstVersionOfText(textInput)
-      setChatHistory(pendingChatHistory => [
-        ...pendingChatHistory,
-        {author: 'chatbot', text: 'Now please enter the second version of the text.'}
-      ])
+      addMessageToChatHistory('chatbot', 'Now please enter the second version of the text.')
     } else {
       // The chatbot now has both versions of the text, so it can redline them.
+      addMessageToChatHistory('chatbot', '')
       const params = new URLSearchParams({ textv1: firstVersionOfText, textv2: textInput })
       const response = await fetch(`http://localhost:5000/redline?${params}`)
       const data = await response.json()
-      setChatHistory(pendingChatHistory => [
-        ...pendingChatHistory,
-        {author: 'chatbot', text: data.message},
-        {author: 'chatbot', text: 'Ready to go again? Please enter the first version of the text.'},
-      ])
-  
-      setFirstVersionOfText(null) // Reset the state, ready to start again.
+      appendToLastMessageInChatHistory(data.message)
+
+      // Reset, ready to start again.
+      setFirstVersionOfText(null)
+      addMessageToChatHistory('chatbot', 'Ready to go again? Please enter the first version of the text.')
     }
   }
 

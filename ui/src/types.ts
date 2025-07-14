@@ -1,4 +1,6 @@
+export type Author = 'chatbot' | 'user'
+
 export interface Message {
-  author: 'chatbot'|'user'
+  author: Author
   text: string
 }
