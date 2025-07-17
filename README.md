@@ -29,7 +29,13 @@ Hot reload enabled for both Python back end and React front end.
 
 ## To do
 
-- Comprehensive error handling
+- Automated tests
+- Comprehensive error handling and logging
+- Accessibility improvements for UI
+- Add config for production version
+- HTTPS/SSL support
+- Rate limiting and abuse protection for API
 - Responsive CSS
+- Use more robust delimiters around text sent to OpenAI
+- Improve sanitisation and rendering of HTML returned by API
 - Favicon
-- Production version

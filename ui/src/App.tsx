@@ -12,7 +12,8 @@ function App() {
   // App state
   const [chatHistory, setChatHistory] = useState<Message[]>([{
     author: 'chatbot',
-    text: "Ready to redline! Please enter the first version of the text.",
+    content: "Ready to redline! Please enter the first version of the text.",
+    isHtml: false,
   }])
   const [textInput, setTextInput] = useState('')
   const [firstVersionOfText, setFirstVersionOfText] = useState<string|null>(null)
@@ -27,8 +28,8 @@ function App() {
     }
   }, [chatHistory])
 
-  const addMessageToChatHistory = (author: Author, text: string) => {
-    setChatHistory(pendingChatHistory => [...pendingChatHistory, {author, text}])
+  const addMessageToChatHistory = (author: Author, content: string, isHtml: boolean = false) => {
+    setChatHistory(pendingChatHistory => [...pendingChatHistory, {author, content, isHtml}])
   }
 
   const appendToLastMessageInChatHistory = (textChunk: string) => {
@@ -40,7 +41,7 @@ function App() {
         ...pendingChatHistory.slice(0, -1),
         {
           ...lastMessage,
-          text: lastMessage.text + textChunk,
+          content: lastMessage.content + textChunk,
         },
       ]
     })
@@ -70,7 +71,7 @@ function App() {
         if (!response.body) throw new Error("API response has no body")
         const responseReader = response.body.getReader()
         const textDecoder = new TextDecoder()
-        addMessageToChatHistory('chatbot', "") // Add an empty chat bubble to stream the response into.
+        addMessageToChatHistory('chatbot', "", true) // Add an empty HTML chat bubble to stream the response into.
         while (true) {
           const { done, value } = await responseReader.read()
           if (done) break

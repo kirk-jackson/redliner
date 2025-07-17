@@ -54,13 +54,15 @@ h1 {
 }
 
 .chat-bubble.author-chatbot {
+  margin-right: 10%;
   align-self: flex-start;
-  background-color: #ffe0e0;
+  background-color: #f0f0f0;
 }
 
 .chat-bubble.author-user {
+  margin-left: 10%;
   align-self: flex-end;
-  background-color: #f0f0f0;
+  background-color: #e0e0e0;
 }
 
 textarea {
@@ -80,4 +82,19 @@ button {
   border-radius: 10px;
   background-color: #fd515b;
   color: #ffffff;
+}
+
+del, ins {
+  border-radius: 4px;
+  padding: 2px 4px;
+  text-decoration-color: #fd515b;
+  text-decoration-thickness: 2px;
+}
+
+ins {
+  background-color: #d0ffd0;
+}
+
+del {
+  background-color: #ffd0d0;
 }
