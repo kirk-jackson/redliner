@@ -29,11 +29,13 @@ function App() {
     }
   }, [chatHistory])
 
+  // Add a message to the chat history.
   const addMessageToChatHistory = (author: Author, content: string, isHtml: boolean = false) => {
     setChatHistory(pendingChatHistory => [...pendingChatHistory, {author, content, isHtml}])
   }
 
-  const appendToLastMessageInChatHistory = (textChunk: string) => {
+  // Append a chunk of HTML/text to the last message in the chat history.
+  const appendToLastMessageInChatHistory = (chunk: string) => {
     setChatHistory(pendingChatHistory => {
       if (pendingChatHistory.length === 0) return pendingChatHistory
 
@@ -42,7 +44,7 @@ function App() {
         ...pendingChatHistory.slice(0, -1),
         {
           ...lastMessage,
-          content: lastMessage.content + textChunk,
+          content: lastMessage.content + chunk,
         },
       ]
     })
@@ -70,6 +72,7 @@ function App() {
       // Call the API and stream the response.
       const requestUrlParams = new URLSearchParams({ textv1: firstVersionOfText, textv2: textInput })
       try {
+        // Call the API and check the response for errors.
         const response = await fetch(`http://localhost:5000/redline?${requestUrlParams}`)
         if (!response.body) throw new Error("API response has no body")
         if (!response.ok) {
@@ -80,6 +83,8 @@ function App() {
           }
           throw new Error("API error")
         }
+
+        // Stream the API response to the chat history.
         const responseReader = response.body.getReader()
         const textDecoder = new TextDecoder()
         addMessageToChatHistory('chatbot', "", true) // Add an empty HTML chat bubble to stream the response into.

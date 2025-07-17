@@ -32,6 +32,7 @@ def redline():
     {text_v2}
   """
 
+  # Call the OpenAI API.
   try:
     openai_response_stream = openai_client.responses.create(
       model="gpt-4-turbo",
@@ -44,6 +45,7 @@ def redline():
   except Exception:
     return jsonify({'error': "OpenAI API request failed"}), 502
 
+  # This generator function streams the response from the OpenAI API to the client.
   def response_generator():
     for stream_event in openai_response_stream:
       if (stream_event.type == 'response.output_text.delta'):
