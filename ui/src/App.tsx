@@ -19,6 +19,7 @@ function App() {
   const [firstVersionOfText, setFirstVersionOfText] = useState<string|null>(null)
 
   const chatHistoryRef = useRef<HTMLDivElement>(null)
+  const textInputRef = useRef<HTMLTextAreaElement>(null)
 
   // Ensure that new messages are always visible.
   useEffect(() => {
@@ -55,6 +56,8 @@ function App() {
     addMessageToChatHistory('user', textInput)
     setTextInput('')
 
+    textInputRef.current?.focus() // Refocus the text input so the user can keep typing.
+
     // Process the user's input and let the chatbot respond.
     if (firstVersionOfText === null) {
       // The chatbot now has the first version of the text, but it still needs the second.
@@ -69,6 +72,14 @@ function App() {
       try {
         const response = await fetch(`http://localhost:5000/redline?${requestUrlParams}`)
         if (!response.body) throw new Error("API response has no body")
+        if (!response.ok) {
+          const error = await response.json()
+          if (error.code === 'openai_authentication') {
+            addMessageToChatHistory('chatbot', "Oh dear, OpenAI won't talk to me. I might not have a valid API key. 😕")
+            return
+          }
+          throw new Error("API error")
+        }
         const responseReader = response.body.getReader()
         const textDecoder = new TextDecoder()
         addMessageToChatHistory('chatbot', "", true) // Add an empty HTML chat bubble to stream the response into.
@@ -81,11 +92,11 @@ function App() {
         }
       } catch {
         addMessageToChatHistory('chatbot', "Sorry, something went wrong and I couldn't complete the task. 😕")
+      } finally {
+        // Reset, ready to start again.
+        setFirstVersionOfText(null)
+        addMessageToChatHistory('chatbot', "Ready to go again? Please enter the first version of the text.")
       }
-
-      // Reset, ready to start again.
-      setFirstVersionOfText(null)
-      addMessageToChatHistory('chatbot', "Ready to go again? Please enter the first version of the text.")
     }
   }
 
@@ -111,6 +122,7 @@ function App() {
           rows={3}
           placeholder="Enter text"
           value={textInput}
+          ref={textInputRef}
           onKeyDown={handleKeyDown}
           onChange={event => setTextInput(event.target.value)}
         />

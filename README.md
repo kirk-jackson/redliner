@@ -34,6 +34,7 @@ Hot reload enabled for both Python back end and React front end.
 - Accessibility improvements for UI
 - Add config for production version
 - HTTPS/SSL support
+- More robust handling of OpenAI response stream
 - Rate limiting and abuse protection for API
 - Responsive CSS
 - Use more robust delimiters around text sent to OpenAI
