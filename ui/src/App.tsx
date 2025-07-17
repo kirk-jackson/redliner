@@ -12,7 +12,7 @@ function App() {
   // App state
   const [chatHistory, setChatHistory] = useState<Message[]>([{
     author: 'chatbot',
-    text: 'Ready to redline! Please enter the first version of the text.',
+    text: "Ready to redline! Please enter the first version of the text.",
   }])
   const [textInput, setTextInput] = useState('')
   const [firstVersionOfText, setFirstVersionOfText] = useState<string|null>(null)
@@ -58,18 +58,41 @@ function App() {
     if (firstVersionOfText === null) {
       // The chatbot now has the first version of the text, but it still needs the second.
       setFirstVersionOfText(textInput)
-      addMessageToChatHistory('chatbot', 'Now please enter the second version of the text.')
+      addMessageToChatHistory('chatbot', "Now please enter the second version of the text.")
     } else {
       // The chatbot now has both versions of the text, so it can redline them.
-      addMessageToChatHistory('chatbot', '')
-      const params = new URLSearchParams({ textv1: firstVersionOfText, textv2: textInput })
-      const response = await fetch(`http://localhost:5000/redline?${params}`)
-      const data = await response.json()
-      appendToLastMessageInChatHistory(data.message)
+      addMessageToChatHistory('chatbot', "Thanks. Please give me a moment...")
+
+      // Call the API and stream the response.
+      const requestUrlParams = new URLSearchParams({ textv1: firstVersionOfText, textv2: textInput })
+      try {
+        const response = await fetch(`http://localhost:5000/redline?${requestUrlParams}`)
+        if (!response.body) throw new Error("API response has no body")
+        const responseReader = response.body.getReader()
+        const textDecoder = new TextDecoder()
+        addMessageToChatHistory('chatbot', "") // Add an empty chat bubble to stream the response into.
+        while (true) {
+          const { done, value } = await responseReader.read()
+          if (done) break
+          if (value) {
+            appendToLastMessageInChatHistory(textDecoder.decode(value))
+          }
+        }
+      } catch {
+        addMessageToChatHistory('chatbot', "Sorry, something went wrong and I couldn't complete the task. 😕")
+      }
 
       // Reset, ready to start again.
       setFirstVersionOfText(null)
-      addMessageToChatHistory('chatbot', 'Ready to go again? Please enter the first version of the text.')
+      addMessageToChatHistory('chatbot', "Ready to go again? Please enter the first version of the text.")
+    }
+  }
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    // Pressing Enter submits the message, unless Shift is also pressed.
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault()
+      handleSubmit()
     }
   }
 
@@ -87,6 +110,7 @@ function App() {
           rows={3}
           placeholder="Enter text"
           value={textInput}
+          onKeyDown={handleKeyDown}
           onChange={event => setTextInput(event.target.value)}
         />
         <button type="submit" onClick={handleSubmit}>
