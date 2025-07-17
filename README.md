@@ -10,9 +10,9 @@ An app for redlining legal documents.
 ## Setup
 
 1. ```bash
-   cp api/.env.example api/.env
+   cp .env.example .env
    ```
-2. Paste your OpenAI API key in `api/.env`.
+2. Paste your OpenAI API key in `.env`.
 
 ## Run (in development mode)
 
@@ -25,7 +25,7 @@ An app for redlining legal documents.
 Hot reload enabled for both Python back end and React front end.
 
 - UI: http://localhost:3000
-- API: http://localhost:5000
+- API: http://localhost:5000/redline
 
 ## To do
 
