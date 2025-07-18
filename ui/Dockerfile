@@ -1,6 +1,7 @@
-FROM node:24
+FROM node:24-alpine
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
+RUN npm ci
 COPY . .
-CMD ["npm", "run", "dev"]
+RUN npm run build
+CMD ["npm", "run", "preview", "--", "--port", "3000"]

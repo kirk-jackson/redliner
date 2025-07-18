@@ -2,25 +2,18 @@ services:
   api:
     build:
       context: ./api
-    volumes:
-      - ./api:/app
     ports:
       - "5000:5000"
     environment:
       - FLASK_APP=app.py
-      - FLASK_ENV=development
-      - FLASK_DEBUG=1
       - OPENAI_API_KEY=${OPENAI_API_KEY}
-    command: flask run --host=0.0.0.0 --reload
+    command: flask run --host=0.0.0.0 --port=5000
 
   ui:
     build:
       context: ./ui
-    volumes:
-      - ./ui:/app
-      - /app/node_modules
     working_dir: /app
-    command: npm run dev
+    command: npm run preview -- --port 3000
     ports:
       - "3000:3000"
     depends_on:

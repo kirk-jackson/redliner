@@ -8,6 +8,8 @@ import './App.css'
 import ChatBubble from './ChatBubble'
 import type { Author, Message } from './types.ts'
 
+const redlinerApiOrigin = import.meta.env.VITE_REDLINER_API_ORIGIN
+
 function App() {
   // App state
   const [chatHistory, setChatHistory] = useState<Message[]>([{
@@ -73,7 +75,7 @@ function App() {
       const requestUrlParams = new URLSearchParams({ textv1: firstVersionOfText, textv2: textInput })
       try {
         // Call the API and check the response for errors.
-        const response = await fetch(`http://localhost:5000/redline?${requestUrlParams}`)
+        const response = await fetch(`${redlinerApiOrigin}/redline?${requestUrlParams}`)
         if (!response.body) throw new Error("API response has no body")
         if (!response.ok) {
           const error = await response.json()
