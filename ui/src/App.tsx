@@ -8,7 +8,10 @@ import './App.css'
 import ChatBubble from './ChatBubble'
 import type { Author, Message } from './types.ts'
 
-const redlinerApiOrigin = import.meta.env.VITE_REDLINER_API_ORIGIN
+// TODO: When hosted on Render, inject the API origin as an environment variable.
+const redlinerApiOrigin = window.location.hostname === 'redliner.onrender.com'
+  ? 'redliner-api.onrender.com'
+  : import.meta.env.VITE_REDLINER_API_ORIGIN
 
 function App() {
   // App state
