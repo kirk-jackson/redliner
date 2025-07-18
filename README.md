@@ -5,7 +5,7 @@ An app for redlining legal documents.
 Demo hosted on Render:
 
 - UI: https://redliner.onrender.com
-- API: https://redliner.onrender.com/redline
+- API: https://redliner-api.onrender.com/redline
 
 May take a minute to spin up.
 
