@@ -2,12 +2,16 @@
 
 An app for redlining legal documents.
 
-Demo hosted on Render:
+## Demo
+
+Demo hosted on [Render](https://render.com/):
 
 - UI: https://redliner.onrender.com
 - API: https://redliner-api.onrender.com/redline
 
-May take a minute to spin up.
+If the app is slow to load or to process the text, that's probably because
+the front end or back end has been spun down due to inactivity.
+Give them a minute to spin back up, then try again.
 
 ## Requirements
 
