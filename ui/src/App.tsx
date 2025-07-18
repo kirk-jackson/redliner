@@ -10,7 +10,7 @@ import type { Author, Message } from './types.ts'
 
 // TODO: When hosted on Render, inject the API origin as an environment variable.
 const redlinerApiOrigin = window.location.hostname === 'redliner.onrender.com'
-  ? 'redliner-api.onrender.com'
+  ? 'https://redliner-api.onrender.com'
   : import.meta.env.VITE_REDLINER_API_ORIGIN
 
 function App() {
