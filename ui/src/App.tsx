@@ -127,7 +127,7 @@ function App() {
       <main ref={chatHistoryRef}>
         {chatHistory.map((message, index) => <ChatBubble message={message} key={index} />)}
       </main>
-      <div id="input">
+      <form>
         <textarea
           rows={3}
           placeholder="Enter text"
@@ -141,7 +141,7 @@ function App() {
             <path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13"></path>
           </svg>
         </button>
-      </div>
+      </form>
     </>
   )
 }

@@ -47,13 +47,16 @@ Features hot reload for both Python back end and React front end.
 
 ## To do
 
+- Disable user input while waiting for chatbot response
 - Automated tests
 - Comprehensive error handling and logging
 - Accessibility improvements for UI
 - Add Docker config for production version running on nginx
+- Use Gunicorn instead of Flask's HTTP server
 - HTTPS/SSL support
 - More robust handling of OpenAI response stream
 - Rate limiting and abuse protection for API
+- Restrict CORS on the API
 - Switch to SCSS
 - Use more robust delimiters around text sent to OpenAI
 - Improve sanitisation and rendering of HTML returned by API
